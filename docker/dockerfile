@@ -1,0 +1,18 @@
+FROM alpine:3.8
+MAINTAINER chishin <pro@xxgzs.org>
+
+WORKDIR /
+ENV VERSION 0.0.1
+ENV PORT 9090
+
+ADD WolGoWeb_Linux_amd64 /
+RUN mkdir /web && \
+    mv /WolGoWeb_Linux_amd64 /web/WolGoWeb && \
+    rm -rf /WolGoWeb_Linux_amd64 && \
+    chmod 777 /web/WolGoWeb
+
+VOLUME /web
+
+EXPOSE $PORT
+
+CMD /web/WolGoWeb -port $PORT
