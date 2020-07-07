@@ -13,6 +13,8 @@ var (
 func main()  {
 	flag.Parse()
 
+	gin.SetMode(gin.ReleaseMode)
+
 	r:=gin.Default()
 
 	r.GET("/", GetIndex)

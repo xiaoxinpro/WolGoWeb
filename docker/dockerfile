@@ -5,10 +5,15 @@ WORKDIR /
 ENV VERSION 0.0.1
 ENV PORT 9090
 
-ADD WolGoWeb_Linux_amd64 /
-RUN mkdir /web && \
-    mv /WolGoWeb_Linux_amd64 /web/WolGoWeb && \
-    rm -rf /WolGoWeb_Linux_amd64 && \
+RUN apk update && \
+    apk add ca-certificates && \
+    update-ca-certificates && \
+    apk --no-cache add openssl wget && \
+    mkdir /web && \
+    cd /web && \
+    wget https://github.com/xiaoxinpro/WolGoWeb/releases/download/V${VERSION}/WolGoWeb_${VERSION}_linux_amd64 && \
+    mv WolGoWeb_${VERSION}_linux_amd64 WolGoWeb && \
+    rm -rf WolGoWeb_${VERSION}_linux_amd64 && \
     chmod 777 /web/WolGoWeb
 
 VOLUME /web
@@ -16,3 +21,4 @@ VOLUME /web
 EXPOSE $PORT
 
 CMD /web/WolGoWeb -port $PORT
+
