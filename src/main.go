@@ -65,7 +65,6 @@ func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
 			err = 101
 			message = "No authority."
 		} else if timeUnix - vk > 3000 || vk - timeUnix > 1 {
-			fmt.Printf("timeUnix = %d, vk = %d, timeUnix - vk = %d, vk - timeUnix = %d", timeUnix, vk, timeUnix - vk, vk - timeUnix)
 			err = 102
 			message = "The value of Time is no longer in the valid range."
 		} else if bakVK, ok := vkBakDict[mac]; ok && bakVK == vk {
