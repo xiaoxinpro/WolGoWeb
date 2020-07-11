@@ -18,6 +18,13 @@ docker run -d --net=host chishin/wol-go-web
 docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 ```
 
+#### 环境变量说明：
+
+|参数名称|描述|备注
+|---|---|---|
+|PORT|开放服务端口|默认：9090|
+|KEY|API权限验证KEY|默认关闭，详见 [API权限验证说明](https://github.com/xiaoxinpro/WolGoWeb#4api%E6%9D%83%E9%99%90%E9%AA%8C%E8%AF%81)|
+
 ## 群晖Docker部署
 
 首先你的群晖必须已经安装好Docker，打开Docker应用，在 **注册表** 中搜索 `wol-go-web`，搜索到下图这个 `chishin/wol-go-web` 右击下载。
