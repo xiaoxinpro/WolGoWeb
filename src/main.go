@@ -37,7 +37,7 @@ func main()  {
 	r.GET("/index", GetIndex)
 	r.GET("/wol", GetWol)
 
-	fmt.Printf("WolGoWeb Runing [port:%d]\n", *WebPort)
+	fmt.Printf("WolGoWeb Runing [port:%d, key:%s]\n", *WebPort, *ApiKey)
 
 	r.Run(fmt.Sprintf(":%d", *WebPort))
 }
@@ -58,7 +58,7 @@ Params:
 func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
 	err := 0
 	message := "OK"
-	if len(key) < 6 {
+	if len(key) >= 6 {
 		timeUnix := time.Now().Unix()
 		fmt.Printf("%d", timeUnix)
 		if len(token) != 32 {
