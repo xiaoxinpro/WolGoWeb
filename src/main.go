@@ -58,7 +58,7 @@ Params:
 func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
 	err := 0
 	message := "OK"
-	if key != "false" {
+	if len(key) < 6 {
 		timeUnix := time.Now().Unix()
 		fmt.Printf("%d", timeUnix)
 		if len(token) != 32 {
