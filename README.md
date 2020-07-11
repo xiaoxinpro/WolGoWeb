@@ -32,7 +32,7 @@ WolGoWeb_0.0.1_linux_amd64 -port 9090
 |参数名称|描述|备注
 |---|---|---|
 |-port|开放服务端口|默认：9090|
-|-key|API权限验证KEY|默认关闭，详见[API权限验证说明](https://github.com/xiaoxinpro/WolGoWeb#4、API权限验证)|
+|-key|API权限验证KEY|默认关闭，详见[API权限验证说明](https://github.com/xiaoxinpro/WolGoWeb#4api%E6%9D%83%E9%99%90%E9%AA%8C%E8%AF%81)|
 
 ### 2、服务器Docker部署
 
@@ -53,7 +53,7 @@ docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 |参数名称|描述|备注
 |---|---|---|
 |PORT|开放服务端口|默认：9090|
-|KEY|API权限验证KEY|默认关闭，详见 [API权限验证说明](https://github.com/xiaoxinpro/WolGoWeb#4、API权限验证)|
+|KEY|API权限验证KEY|默认关闭，详见 [API权限验证说明](https://github.com/xiaoxinpro/WolGoWeb#4api%E6%9D%83%E9%99%90%E9%AA%8C%E8%AF%81)|
 
 ### 3、群晖Docker部署
 
