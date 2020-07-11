@@ -2,7 +2,7 @@ FROM alpine:3.8
 MAINTAINER chishin <pro@xxgzs.org>
 
 WORKDIR /
-ENV VERSION 0.0.1
+ENV VERSION 0.0.2
 ENV PORT 9090
 
 RUN apk update && \
@@ -11,7 +11,8 @@ RUN apk update && \
     apk --no-cache add openssl wget && \
     mkdir /web && \
     cd /web && \
-    wget https://github.com/xiaoxinpro/WolGoWeb/releases/download/V${VERSION}/WolGoWeb_${VERSION}_linux_amd64 && \
+    # wget https://github.com/xiaoxinpro/WolGoWeb/releases/download/V${VERSION}/WolGoWeb_${VERSION}_linux_amd64 && \
+    wget https://github.com/xiaoxinpro/WolGoWeb/raw/master/docker/WolGoWeb_Linux_amd64 && \
     mv WolGoWeb_${VERSION}_linux_amd64 WolGoWeb && \
     rm -rf WolGoWeb_${VERSION}_linux_amd64 && \
     chmod 777 /web/WolGoWeb
