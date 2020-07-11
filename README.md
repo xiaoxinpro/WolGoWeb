@@ -88,7 +88,15 @@ docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 |ip|唤醒主机的IP地址|默认：255.255.255.255|
 |port|唤醒命令发送的端口|默认：9|
 
-## 更多使用实例
+## 应用实例实例
 
-不断更新中。。。
+### 1、使用iOS快捷指令唤醒（Siri唤醒）
+
+可以自己创建一个快捷指令访问唤醒的URL即可，也可以直接在iOS浏览器中打开下面的链接修改成你的服务器地址和需要唤醒的MAC地址。
+
+[https://www.icloud.com/shortcuts/0931d2a9d4e84984b8d85e977aff8ef9](https://www.icloud.com/shortcuts/0931d2a9d4e84984b8d85e977aff8ef9)
+
+![快捷指令](https://upload-images.jianshu.io/upload_images/1568014-9304d5e3506cd536.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+创建完成快捷指令后可以在快捷指令主页用点击 **唤醒电脑** ，或者语音唤醒Siri说出 **唤醒电脑** 即可完成电脑唤醒。
 
