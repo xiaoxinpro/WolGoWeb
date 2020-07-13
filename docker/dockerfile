@@ -17,7 +17,9 @@ RUN apk update && \
     chmod 777 /web/WolGoWeb
 
 ENV TZ Asia/Shanghai
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apk add tzdata && \
+    ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone
 
 VOLUME /web
 
