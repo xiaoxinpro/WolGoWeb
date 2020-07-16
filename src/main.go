@@ -93,7 +93,7 @@ func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
 	message := "OK"
 	if len(key) >= 6 {
 		timeUnix := time.Now().Unix()
-		fmt.Printf("%d", timeUnix)
+		fmt.Printf("now=%d, vk=%d\n", timeUnix, vk)
 		if len(token) != 32 {
 			err = 101
 			message = "No authority."
