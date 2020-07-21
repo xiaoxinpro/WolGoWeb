@@ -67,7 +67,7 @@ docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 
 完成部署工作即可开始使用，首先使用浏览器访问 `http://服务器IP或域名:9090`，如果修改了端口号请访问对应的端口。
 
-![访问服务地址](https://upload-images.jianshu.io/upload_images/1568014-d02b340a42a433aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![访问服务地址](https://image.xiaoxin.pro/github/WolGoWeb/%E8%AE%BF%E9%97%AE%E6%9C%8D%E5%8A%A1%E5%9C%B0%E5%9D%80.PNG)
 
 看到以上界面表示服务部署成功。
 
@@ -75,7 +75,7 @@ docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 
 可以直接使用浏览器访问 `http://服务器IP或域名:9090/wol?mac=需要唤醒主机的MAC地址` 当出现以下界面表示唤醒命令发送成功。
 
-![发送唤醒请求](https://upload-images.jianshu.io/upload_images/1568014-6d1abfdbb644a986.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![发送唤醒请求](https://image.xiaoxin.pro/github/WolGoWeb/%E5%8F%91%E9%80%81%E5%94%A4%E9%86%92%E8%AF%B7%E6%B1%82.PNG)
 
 ### 3、唤醒请求参数
 |参数名称|描述|备注
@@ -118,7 +118,7 @@ API权限验证用于防止他人触发唤醒指令的发送，是一种唤醒�
 
 [https://www.icloud.com/shortcuts/0931d2a9d4e84984b8d85e977aff8ef9](https://www.icloud.com/shortcuts/0931d2a9d4e84984b8d85e977aff8ef9)
 
-![快捷指令](https://upload-images.jianshu.io/upload_images/1568014-9304d5e3506cd536.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![快捷指令](https://image.xiaoxin.pro/github/WolGoWeb/%E5%BF%AB%E6%8D%B7%E6%8C%87%E4%BB%A4.PNG)
 
 创建完成快捷指令后可以在快捷指令主页用点击 **唤醒电脑** ，或者语音唤醒Siri说出 **唤醒电脑** 即可完成电脑唤醒。
 
