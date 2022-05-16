@@ -6,12 +6,12 @@
 
 ## 开发状态
 
-WolGoWeb 仍然处于开发阶段，未经充分测试与验证，不推荐用于生产环境。
+WolGoWeb 经历两年多的测试已经在诸多测试、生产环境得以稳定运行。
 
 * master 分支用于发布开发版本（稳定性需要进一步测试）
 * release 版本为经测试稳定发布的版本（建议下载最新的 release 版本部署）
 
-目前WebAPI可能随时改变，不保证向后兼容，升级是需注意WebAPI是否准确。
+在生产环境中建议使用Docker或release版本来部署WolGoWeb。
 
 ## 部署说明
 
@@ -20,7 +20,7 @@ WolGoWeb 仍然处于开发阶段，未经充分测试与验证，不推荐用�
 无论是Windows还是Linux系统都可以直接下载对应的 release 编译版本直接运行即可，无需安装任何依赖。
 
 ```
-WolGoWeb_0.0.1_linux_amd64 -port 9090
+WolGoWeb_0.0.3_linux_amd64 -port 9090
 ```
 
 其中参数 `-port` 表示服务端口号，默认是 `9090` 也可以不填。
