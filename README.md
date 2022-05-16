@@ -34,9 +34,35 @@ WolGoWeb_0.0.1_linux_amd64 -port 9090
 |-port|开放服务端口|默认：9090|
 |-key|API权限验证KEY|默认关闭，详见[API权限验证说明](https://github.com/xiaoxinpro/WolGoWeb#4api%E6%9D%83%E9%99%90%E9%AA%8C%E8%AF%81)|
 
-### 2、服务器Docker部署
+### 2、服务器Docker-compose部署（推荐）
 
-使用 Docker 可以更加便捷的部署 WolGoWeb 工具。
+使用 Docker-compose 可以十分便捷的部署 WolGoWeb 工具，首先要确保服务器中已经安装了 Docker 和 Docker-compose。
+
+然后创建一个 `docker-compose.yml` 文件：
+
+```
+version: '3'
+services:
+  wol-go-web:
+    image: chishin/wol-go-web
+    container_name: WolGoWeb
+    restart: always
+    network_mode: host
+    environment:
+      - PORT=9090
+      - KEY=false
+```
+
+最后启动容器：
+
+```
+docker-compose pull
+docker-compose up -d
+```
+
+### 3、服务器Docker部署
+
+使用 Docker 部署 WolGoWeb 工具：
 
 ```
 docker run -d --net=host chishin/wol-go-web
@@ -55,7 +81,7 @@ docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 |PORT|开放服务端口|默认：9090|
 |KEY|API权限验证KEY|默认关闭，详见 [API权限验证说明](https://github.com/xiaoxinpro/WolGoWeb#4api%E6%9D%83%E9%99%90%E9%AA%8C%E8%AF%81)|
 
-### 3、群晖Docker部署
+### 4、群晖Docker部署
 
 群晖系统可以在Docker应用的 **注册表** 中搜索 `wol-go-web`，即可下载和部署项目。
 
