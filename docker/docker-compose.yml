@@ -1,0 +1,10 @@
+version: '3'
+services:
+  wol-go-web:
+    image: chishin/wol-go-web
+    container_name: WolGoWeb
+    restart: always
+    network_mode: host
+    environment:
+      - PORT=9090
+      - KEY=false
