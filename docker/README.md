@@ -4,9 +4,35 @@
 
  > 在使用该工具前，首先要确认需要唤醒的主机支持WOL功能并且已经开启。
 
+## 服务器Docker-compose部署（推荐）
+
+使用 Docker-compose 可以十分便捷的部署 WolGoWeb 工具，首先要确保服务器中已经安装了 Docker 和 Docker-compose。
+
+然后创建一个 `docker-compose.yml` 文件：
+
+```
+version: '3'
+services:
+  wol-go-web:
+    image: chishin/wol-go-web
+    container_name: WolGoWeb
+    restart: always
+    network_mode: host
+    environment:
+      - PORT=9090
+      - KEY=false
+```
+
+最后启动容器：
+
+```
+docker-compose pull
+docker-compose up -d
+```
+
 ## 服务器Docker部署
 
-使用 Docker 可以更加便捷的部署 WolGoWeb 工具。
+使用 Docker 部署 WolGoWeb 工具：
 
 ```
 docker run -d --net=host chishin/wol-go-web
@@ -18,7 +44,7 @@ docker run -d --net=host chishin/wol-go-web
 docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 ```
 
-#### 环境变量说明：
+### 环境变量说明：
 
 |参数名称|描述|备注
 |---|---|---|
