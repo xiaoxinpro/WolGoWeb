@@ -16,7 +16,7 @@ services:
   wol-go-web:
     image: chishin/wol-go-web
     container_name: WolGoWeb
-    restart: always
+    restart: unless-stopped
     network_mode: host
     environment:
       - PORT=9090
