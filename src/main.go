@@ -11,6 +11,10 @@ import (
 )
 
 var (
+	VERSION = "0.0.4"
+)
+
+var (
 	ConfigSource string
 	WebMode string
 	WebPort int
@@ -56,6 +60,9 @@ func init()  {
 func main()  {
 	flag.Parse()
 
+	fmt.Printf("Start Run WolGoWeb...\n\n")
+	fmt.Printf("Version: %s\n\n", VERSION)
+
 	if ConfigSource == "env" {
 		WebMode = getEnvString("MODE", WebMode)
 		WebPort = getEnvInt("PORT", WebPort)
@@ -78,14 +85,18 @@ func main()  {
 func GetIndex(c *gin.Context) {
 	c.String(200, `
 WOL唤醒工具
+
 API: %s/wol
+
 Params:
   mac  : 需要唤醒的MAC地址（必须）,
   ip   : 指定IP地址（默认：255.255.255.255）,
   port : 唤醒端口（默认：9）,
   time : 请求时间戳（配合授权验证使用）,
   token: 授权Token = MD5(key + mac + time)（必须存在key的情况下才有效，否则忽略。）,
-`, c.Request.Host)
+
+Version: %s
+`, c.Request.Host, VERSION)
 }
 
 func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
