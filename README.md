@@ -8,8 +8,8 @@
 
 WolGoWeb 经历两年多的测试已经在诸多测试、生产环境得以稳定运行。
 
-* master 分支用于发布开发版本（稳定性需要进一步测试）
-* release 版本为经测试稳定发布的版本（建议下载最新的 release 版本部署）
+* [master](https://github.com/xiaoxinpro/WolGoWeb/tree/master) 分支用于发布开发版本（稳定性需要进一步测试）
+* [release](https://github.com/xiaoxinpro/WolGoWeb/releases) 版本为经测试稳定发布的版本（建议下载最新的 release 版本部署）
 
 在生产环境中建议使用Docker或release版本来部署WolGoWeb。
 
@@ -20,7 +20,7 @@ WolGoWeb 经历两年多的测试已经在诸多测试、生产环境得以稳�
 无论是Windows还是Linux系统都可以直接下载对应的 release 编译版本直接运行即可，无需安装任何依赖。
 
 ```
-WolGoWeb_0.0.3_linux_amd64 -port 9090
+WolGoWeb_0.0.4_linux_amd64 -port 9090
 ```
 
 其中参数 `-port` 表示服务端口号，默认是 `9090` 也可以不填。
@@ -46,7 +46,7 @@ services:
   wol-go-web:
     image: chishin/wol-go-web
     container_name: WolGoWeb
-    restart: always
+    restart: unless-stopped
     network_mode: host
     environment:
       - PORT=9090
