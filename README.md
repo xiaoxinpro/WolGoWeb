@@ -20,7 +20,7 @@ WolGoWeb 经历两年多的测试已经在诸多测试、生产环境得以稳�
 无论是Windows还是Linux系统都可以直接下载对应的 release 编译版本直接运行即可，无需安装任何依赖。
 
 ```
-WolGoWeb_0.0.4_linux_amd64 -port 9090
+WolGoWeb_1.5.51_linux_amd64 -port 9090
 ```
 
 其中参数 `-port` 表示服务端口号，默认是 `9090` 也可以不填。
