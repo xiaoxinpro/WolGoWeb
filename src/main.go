@@ -4,11 +4,10 @@ import (
 	"crypto/md5"
 	"flag"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 var (
