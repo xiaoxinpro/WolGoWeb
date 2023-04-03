@@ -127,7 +127,8 @@ API权限验证用于防止他人触发唤醒指令的发送，是一种唤醒�
 | time  | 发送请求时的时间戳       | 单位：秒                    |
 | token | 经过加密后得到的权限Token | token=MD5(key+mac+time) |
 
-例如：设定的`key=123456`，发送请求时的 `time=1594452205`, `mac=00-00-00-00-00-00`，计算token的公式为`MD5("12345600-00-00-00-00-001594452205")`,结果为`token=eb3515003672b3e0324196ecd78438a2`
+例如：设定的`key=123456`，发送请求时的 `time=1594452205`, `mac=AA-00-00-00-00-CC`，计算token的公式为`MD5("12345600-00-00-00-00-001594452205")`,结果为`token=eb3515003672b3e0324196ecd78438a2`
+所以最终url=http://abc.com:9090/wol?mac=AA-00-00-00-00-CC&time=1594452205&token=eb3515003672b3e0324196ecd78438a2
 
 #### 特别注意
 
@@ -142,9 +143,9 @@ API权限验证用于防止他人触发唤醒指令的发送，是一种唤醒�
 
 可以自己创建一个快捷指令访问唤醒的URL即可，也可以直接在iOS浏览器中打开下面的链接修改成你的服务器地址和需要唤醒的MAC地址。
 
-[https://www.icloud.com/shortcuts/0931d2a9d4e84984b8d85e977aff8ef9](https://www.icloud.com/shortcuts/0931d2a9d4e84984b8d85e977aff8ef9)
+[https://www.icloud.com/shortcuts/d717ce78fe6149f88cdd388e9a4a03ad](https://www.icloud.com/shortcuts/d717ce78fe6149f88cdd388e9a4a03ad)
 
-![快捷指令](https://image.xiaoxin.pro/github/WolGoWeb/%E5%BF%AB%E6%8D%B7%E6%8C%87%E4%BB%A4.PNG)
+![快捷指令](https://lzzz.fun/ios.jpg)
 
 创建完成快捷指令后可以在快捷指令主页用点击 **唤醒电脑** ，或者语音唤醒Siri说出 **唤醒电脑** 即可完成电脑唤醒。
 
