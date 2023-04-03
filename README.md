@@ -145,7 +145,7 @@ Webapi传入多个参数使用`&`隔开
 
 可以自己创建一个快捷指令访问唤醒的URL即可，也可以直接在iOS浏览器中打开下面的链接修改成你的服务器地址和需要唤醒的MAC地址。
 
-[https://www.icloud.com/shortcuts/59078ebc61f2485bbd7fe16bcc43e5e8](https://www.icloud.com/shortcuts/59078ebc61f2485bbd7fe16bcc43e5e8)
+可从iCloud下载该快捷指令[https://www.icloud.com/shortcuts/59078ebc61f2485bbd7fe16bcc43e5e8](https://www.icloud.com/shortcuts/59078ebc61f2485bbd7fe16bcc43e5e8)
 
 ![快捷指令](https://lzzz.fun/ios.jpg)
 
