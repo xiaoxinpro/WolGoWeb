@@ -4,14 +4,15 @@ import (
 	"crypto/md5"
 	"flag"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
-	VERSION = "1.5.51"
+	VERSION = "1.5.53"
 )
 
 var (
@@ -102,20 +103,22 @@ Version: %s
 func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
 	err := 0
 	message := "OK"
-	vk = vk * 1e(19-(len(vk)))
+	vkStr := strconv.FormatInt(vk, 10)
+	vkLen := int64(len(vkStr))
+	vk *= 10 * (19 - vkLen)
 	if len(key) >= 6 {
 		timeUnix := time.Now().UnixNano()
 		fmt.Printf("now=%d, vk=%d\n", timeUnix, vk)
 		if len(token) != 32 {
 			err = 101
 			message = "No authority."
-		} else if timeUnix-vk > 30000000 || vk-timeUnix > 1 {
+		} else if timeUnix-vk < 30000000000 || vk-timeUnix > 1 {
 			err = 102
 			message = "The value of Time is no longer in the valid range."
 		} else if bakVK, ok := vkBakDict[mac]; ok && bakVK == vk {
 			err = 103
 			message = "Time value repetition."
-		} else if MD5(ApiKey+mac+fmt.Sprintf("%d", vk)) != token {
+		} else if MD5(ApiKey+mac+vkStr) != token {
 			err = 104
 			message = "No authority token."
 		} else {
