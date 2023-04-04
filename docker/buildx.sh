@@ -2,7 +2,7 @@
 BUILD_NAME="buildx-wol-go-web"
 BUILD_PLAT=linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8
 BUILD_PUSH=chishin/wol-go-web
-BUILD_VERS=version-1.5.51
+BUILD_VERS=version-1.5.6
 
 echo "=========== ${BUILD_NAME} ==========="
 
