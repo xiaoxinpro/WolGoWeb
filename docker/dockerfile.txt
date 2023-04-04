@@ -1,0 +1,38 @@
+FROM --platform=${TARGETPLATFORM} chishin/golang-alpine AS build_base
+
+RUN mkdir -p /go/src/github.com/xiaoxinpro/ && \
+    cd /go/src/github.com/xiaoxinpro/ && \
+    git clone https://github.com/xiaoxinpro/WolGoWeb.git && \
+    cd /go/src/github.com/xiaoxinpro && ls -l && \
+    cd /go/src/github.com/xiaoxinpro/WolGoWeb && ls -l && \
+    go get ./src && \
+    go build -ldflags "-w -s" -trimpath -o WolGoWeb ./src
+
+FROM --platform=${TARGETPLATFORM} alpine
+
+MAINTAINER chishin <pro@xxgzs.org>
+
+ENV VERSION 1.5.6
+ENV PORT 9090
+ENV KEY false
+ENV TZ Asia/Shanghai
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk add tzdata && \
+    ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    mkdir /web
+
+WORKDIR /web
+
+COPY --from=build_base /go/src/github.com/xiaoxinpro/WolGoWeb/WolGoWeb .
+
+RUN chmod 755 /web/WolGoWeb
+
+VOLUME /web
+
+EXPOSE $PORT
+
+CMD /web/WolGoWeb -c env
+
+
