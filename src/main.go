@@ -4,14 +4,16 @@ import (
 	"crypto/md5"
 	"flag"
 	"fmt"
-	"github.com/gin-gonic/gin"
+	"math"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
-	VERSION = "1.5.53"
+	VERSION = "1.5.6"
 )
 
 var (
@@ -19,10 +21,6 @@ var (
 	WebMode      string
 	WebPort      int
 	ApiKey       string
-)
-
-var (
-	vkBakDict = make(map[string]int64)
 )
 
 func MD5(str string) string {
@@ -100,31 +98,29 @@ Version: %s
 }
 
 func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
-	err := 0
+	errCode := 0
 	message := "OK"
-	vkStr := strconv.FormatInt(vk, 10)
-	vkLen := int64(len(vkStr))
-	vk *= 10 * (19 - vkLen)
 	if len(key) >= 6 {
-		timeUnix := time.Now().UnixNano()
-		fmt.Printf("now=%d, vk=%d\n", timeUnix, vk)
+		vkStr := strconv.FormatInt(vk, 10)
+		vkLen := float64(19 - int64(len(vkStr)))
+		vknano := vk * int64(math.Pow(10, vkLen))
+		nanoTime := time.Now().UnixNano()
+		fmt.Printf("now=%d, vk=%d\n", nanoTime, vk)
 		if len(token) != 32 {
-			err = 101
-			message = "No authority."
-		} else if timeUnix-vk < 30000000000 || vk-timeUnix > 1 {
-			err = 102
-			message = "The value of Time is no longer in the valid range."
-		} else if bakVK, ok := vkBakDict[mac]; ok && bakVK == vk {
-			err = 103
-			message = "Time value repetition."
+			errCode = 101
+			message = "Token value invalid."
+		} else if vknano > nanoTime+5*1e9 {
+			errCode = 102
+			message = "Time value invalid."
+		} else if nanoTime-vknano > 30*1e9 {
+			errCode = 103
+			message = "Time value invalid."
 		} else if MD5(ApiKey+mac+vkStr) != token {
-			err = 104
+			errCode = 104
 			message = "No authority token."
-		} else {
-			vkBakDict[mac] = vk
 		}
 	}
-	return err, message
+	return errCode, message
 }
 
 func GetWol(c *gin.Context) {
