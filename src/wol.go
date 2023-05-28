@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net"
 	"regexp"
+	"strings"
 )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +105,8 @@ func ipFromInterface(iface string) (*net.UDPAddr, error) {
 
 // wake 执行唤醒指令
 func Wake(macAddr string, ip string, port string) error {
+	macAddr = strings.ReplaceAll(macAddr, ":", "-")
+	macAddr = strings.ReplaceAll(macAddr, "：", "-")
 	bcastInterface := ""
 	bcastAddr := fmt.Sprintf("%s:%s", ip, port)
 	udpAddr, err := net.ResolveUDPAddr("udp", bcastAddr)
