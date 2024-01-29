@@ -1,0 +1,35 @@
+FROM --platform=${TARGETPLATFORM} golang:alpine AS builder
+
+ENV CGO_ENABLED 0
+
+WORKDIR /app
+
+ADD go.mod .
+ADD go.sum .
+RUN go mod download
+COPY . .
+RUN go build -ldflags "-w -s" -trimpath -o WolGoWeb ./src
+
+FROM --platform=${TARGETPLATFORM} alpine
+
+MAINTAINER chishin <pro@xxgzs.org>
+
+ENV VERSION ${BUILD_VERSION}
+ENV PORT 9090
+ENV KEY false
+ENV TZ Asia/Shanghai
+
+WORKDIR /app
+
+COPY --from=builder /app/WolGoWeb .
+
+RUN apk update --no-cache && apk add --no-cache ca-certificates tzdata && \
+    chmod +x ./WolGoWeb
+
+VOLUME /web
+
+EXPOSE $PORT
+
+CMD ["./WolGoWeb", "-c", "env"]
+
+

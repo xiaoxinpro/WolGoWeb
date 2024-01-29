@@ -1,0 +1,44 @@
+# This is a basic workflow to help you get started with Actions
+name: build docker image
+# Controls when the action will run.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
+      - 'actions'
+  release:
+    types: [published]
+jobs:
+  buildx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: 添加Build环境变量
+        run: |
+          echo "BUILD_IMAGE=chishin/wol-go-web" >> $GITHUB_ENV
+          echo "BUILD_PLATFORM=linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8" >> $GITHUB_ENV
+          echo "BUILD_VERSION=$(cat .version)" >> $GITHUB_ENV
+      - name: 添加BuildTag环境变量（push）
+        if: ${{ github.event_name != 'release'}}
+        run: |
+          echo "BUILD_TAG=-t ${BUILD_IMAGE}:dev-${BUILD_VERSION} -t ${BUILD_IMAGE}:dev" >> $GITHUB_ENV
+      - name: 添加BuildTag环境变量（release）
+        if: ${{ github.event_name == 'release'}}
+        run: |
+          echo "BUILD_TAG=-t ${BUILD_IMAGE}:version-${BUILD_VERSION} -t ${BUILD_IMAGE}:version-${BUILD_VERSION%.*} -t ${BUILD_IMAGE}:version-${BUILD_VERSION%.*.*} -t ${BUILD_IMAGE}:latest" >> $GITHUB_ENV
+      - name: 登录DockerHub账号
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: echo "${DOCKER_PASSWORD}" | docker login --username ${DOCKER_USERNAME} --password-stdin
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v2.5.0
+      - name: Buildx Dockerfile
+        run: |
+          docker buildx create --name "Buildx-WolGoWeb" || echo
+          docker buildx use "Buildx-WolGoWeb"
+          docker buildx build -f ./docker/dockerfile-actions ${BUILD_TAG} --platform ${BUILD_PLATFORM} . --push
+          docker buildx rm "Buildx-WolGoWeb"
+          echo "Multiarch build WolGoWeb complete."
