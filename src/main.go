@@ -1,4 +1,4 @@
-package main
+﻿package main
 
 import (
 	"crypto/md5"
@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	VERSION = "1.5.54"
+	VERSION = "1.5.55"
 )
 
 var (
