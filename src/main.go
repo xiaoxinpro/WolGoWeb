@@ -11,13 +11,14 @@ import (
 )
 
 var (
-	VERSION = "1.5.55"
+	VERSION = "1.6.57"
 )
 
 var (
 	ConfigSource string
 	WebMode      string
 	WebPort      int
+	WebEnable    bool
 	ApiKey       string
 )
 
@@ -53,8 +54,9 @@ func getEnvInt(name string, value int) int {
 func init() {
 	flag.StringVar(&ConfigSource, "c", "default", "config source default or env.")
 	flag.StringVar(&WebMode, "mode", gin.ReleaseMode, "wol web mode: debug, release, test.")
-	flag.IntVar(&WebPort, "port", 9090, "wol web port.")
-	flag.StringVar(&ApiKey, "key", "false", "wol web api key.")
+	flag.IntVar(&WebPort, "port", 9090, "wol web port: 0-65535")
+	flag.BoolVar(&WebEnable, "web", true, "wol web page switch: true or false.")
+	flag.StringVar(&ApiKey, "key", "false", "wol web api key, key length greater than 6.")
 }
 
 func main() {
@@ -66,6 +68,7 @@ func main() {
 	if ConfigSource == "env" {
 		WebMode = getEnvString("MODE", WebMode)
 		WebPort = getEnvInt("PORT", WebPort)
+		WebEnable = getEnvString("WEB", strconv.FormatBool(WebEnable)) == "true"
 		ApiKey = getEnvString("KEY", ApiKey)
 	}
 
@@ -73,11 +76,13 @@ func main() {
 
 	r := gin.Default()
 
-	r.GET("/", GetIndex)
-	r.GET("/index", GetIndex)
+	if WebEnable {
+		r.GET("/", GetIndex)
+		r.GET("/index", GetIndex)
+	}
 	r.GET("/wol", GetWol)
 
-	fmt.Printf("WolGoWeb Runing [port:%d, key:%s]\n", WebPort, ApiKey)
+	fmt.Printf("WolGoWeb Runing [port:%d, key:%s, web:%s]\n", WebPort, ApiKey, strconv.FormatBool(WebEnable))
 
 	r.Run(fmt.Sprintf(":%d", WebPort))
 }
