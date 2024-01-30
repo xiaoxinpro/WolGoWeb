@@ -17,6 +17,7 @@ MAINTAINER chishin <pro@xxgzs.org>
 ENV VERSION ${BUILD_VERSION}
 ENV PORT 9090
 ENV KEY false
+ENV WEB true
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
