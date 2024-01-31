@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	VERSION = "1.6.58"
+	VERSION = "1.6.59"
 )
 
 var (
@@ -19,6 +19,8 @@ var (
 	WebMode      string
 	WebPort      int
 	WebEnable    bool
+	WebUsername  string
+	WebPassword  string
 	ApiKey       string
 )
 
@@ -56,6 +58,8 @@ func init() {
 	flag.StringVar(&WebMode, "mode", gin.ReleaseMode, "wol web mode: debug, release, test.")
 	flag.IntVar(&WebPort, "port", 9090, "wol web port: 0-65535")
 	flag.BoolVar(&WebEnable, "web", true, "wol web page switch: true or false.")
+	flag.StringVar(&WebUsername, "username", "", "wol web page login username.")
+	flag.StringVar(&WebPassword, "password", "", "wol web page login password.")
 	flag.StringVar(&ApiKey, "key", "false", "wol web api key, key length greater than 6.")
 }
 
@@ -69,6 +73,8 @@ func main() {
 		WebMode = getEnvString("MODE", WebMode)
 		WebPort = getEnvInt("PORT", WebPort)
 		WebEnable = getEnvString("WEB", strconv.FormatBool(WebEnable)) == "true"
+		WebUsername = getEnvString("USERNAME", WebUsername)
+		WebPassword = getEnvString("PASSWORD", WebPassword)
 		ApiKey = getEnvString("KEY", ApiKey)
 	}
 
@@ -77,8 +83,15 @@ func main() {
 	r := gin.Default()
 
 	if WebEnable {
-		r.GET("/", GetIndex)
-		r.GET("/index", GetIndex)
+		if WebUsername != "" && WebPassword != "" {
+			ginUserAccount := gin.Accounts{WebUsername: WebPassword}
+			r.GET("/", gin.BasicAuth(ginUserAccount), GetIndex)
+			r.GET("/index", gin.BasicAuth(ginUserAccount), GetIndex)
+			fmt.Printf("BasicAuth\n  username:%s\n  password:%s\n\n", WebUsername, WebPassword)
+		} else {
+			r.GET("/", GetIndex)
+			r.GET("/index", GetIndex)
+		}
 	}
 	r.GET("/wol", GetWol)
 
