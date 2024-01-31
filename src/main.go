@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	VERSION = "1.6.59"
+	VERSION = "1.6.60"
 )
 
 var (
@@ -104,7 +104,7 @@ func GetIndex(c *gin.Context) {
 	c.String(200, `
 WOL唤醒工具
 
-API: %s/wol
+API[GET]: http://%s/wol
 
 Params:
   mac  : 需要唤醒的MAC地址（必须）,
@@ -113,8 +113,10 @@ Params:
   time : 请求时间戳（配合授权验证使用）,
   token: 授权Token = MD5(key + mac + time)（必须存在key的情况下才有效，否则忽略。）,
 
+Example: http://%s/wol?mac=11-22-33-44-55-66
+
 Version: %s
-`, c.Request.Host, VERSION)
+`, c.Request.Host, c.Request.Host, VERSION)
 }
 
 func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
