@@ -42,13 +42,13 @@ WolGoWeb_linux_amd64 -port 9090
 
 使用 Docker-compose 可以十分便捷的部署 WolGoWeb 工具，首先要确保服务器中已经安装了 Docker 和 Docker-compose。
 
-然后创建一个 `docker-compose.yml` 文件：
+创建一个 `docker-compose.yml` 文件：
 
-```
+```yaml
 version: '3'
 services:
   wol-go-web:
-    image: chishin/wol-go-web
+    image: chishin/wol-go-web:latest
     container_name: WolGoWeb
     restart: unless-stopped
     network_mode: host
@@ -57,9 +57,17 @@ services:
       - KEY=false
 ```
 
-最后启动容器：
+启动容器：
 
+```bash
+docker-compose pull
+docker-compose up -d
 ```
+
+到此部署已经完成，如果需要升级到最新版本，可直接执行以下命令：
+
+```bash
+docker-compose down
 docker-compose pull
 docker-compose up -d
 ```
@@ -80,13 +88,13 @@ docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 
 #### 环境说明：
 
-| 参数名称     | 描述         | 备注                                                                                                   |
-|----------|------------|------------------------------------------------------------------------------------------------------|
-| PORT     | 开放服务端口     | 默认：9090                                                                                              |
-| WEB      | 是否启用Web页面   | 默认：`true`                                                                                                        |
-| USERNAME | 设置Web页面登陆账号 | 仅在启用Web页面时，且`USERNAME`与`PASSWORD`都不为空时有效                                                                       |
-| PASSWORD | 设置Web页面登陆密码 | 仅在启用Web页面时，且`USERNAME`与`PASSWORD`都不为空时有效                                                                       |
-| KEY      | API权限验证KEY | 默认：`false`不进行权限验证，详见 [API权限验证说明](https://github.com/xiaoxinpro/WolGoWeb#4api%E6%9D%83%E9%99%90%E9%AA%8C%E8%AF%81) |
+| 参数名称     | 描述          | 备注                                                                                                                |
+|----------|-------------|-------------------------------------------------------------------------------------------------------------------|
+| PORT     | 开放服务端口      | 默认：9090                                                                                                           |
+| WEB      | 是否启用Web页面   | 默认：`true`                                                                                                         |
+| USERNAME | 设置Web页面登陆账号 | 仅在启用Web页面时，且`USERNAME`与`PASSWORD`都不为空时有效                                                                          |
+| PASSWORD | 设置Web页面登陆密码 | 仅在启用Web页面时，且`USERNAME`与`PASSWORD`都不为空时有效                                                                          |
+| KEY      | API权限验证KEY  | 默认：`false`不进行权限验证，详见 [API权限验证说明](https://github.com/xiaoxinpro/WolGoWeb#4api%E6%9D%83%E9%99%90%E9%AA%8C%E8%AF%81) |
 
 ### 4、群晖Docker部署
 
