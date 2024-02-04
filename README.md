@@ -6,7 +6,9 @@
 
 ## 开发状态
 
-WolGoWeb 经历两年多的测试已经在诸多测试、生产环境得以稳定运行。
+[![build docker image](https://github.com/xiaoxinpro/WolGoWeb/actions/workflows/docker-image.yml/badge.svg?branch=master)](https://hub.docker.com/r/chishin/wol-go-web)
+
+WolGoWeb 经历了五年的测试已经在诸多测试、生产环境得以稳定运行。
 
 * [master](https://github.com/xiaoxinpro/WolGoWeb/tree/master) 分支用于发布开发版本（稳定性需要进一步测试）
 * [release](https://github.com/xiaoxinpro/WolGoWeb/releases) 版本为经测试稳定发布的版本（建议下载最新的 release 版本部署）
