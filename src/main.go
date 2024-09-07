@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	VERSION = "1.7.67"
+	VERSION = "1.7.68"
 )
 
 var (
@@ -102,7 +102,10 @@ func main() {
 
 	fmt.Printf("WolGoWeb Runing [port:%d, key:%s, web:%s]\n", WebPort, ApiKey, strconv.FormatBool(WebEnable))
 
-	r.Run(fmt.Sprintf(":%d", WebPort))
+	err = r.Run(fmt.Sprintf(":%d", WebPort))
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 func GetIndex(c *gin.Context) {
