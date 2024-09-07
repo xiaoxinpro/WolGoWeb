@@ -73,6 +73,20 @@ func (mp *MagicPacket) Marshal() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+// 获取全部网络接口名
+func NetworkInterfaceNames() ([]string, error) {
+	var names []string
+	iList, err := net.Interfaces()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, item := range iList {
+		names = append(names, item.Name)
+	}
+	return names, nil
+}
+
 // ipFromInterface returns a `*net.UDPAddr` from a network interface name.
 func ipFromInterface(iface string) (*net.UDPAddr, error) {
 	ief, err := net.InterfaceByName(iface)
@@ -103,8 +117,8 @@ func ipFromInterface(iface string) (*net.UDPAddr, error) {
 }
 
 // wake 执行唤醒指令
-func Wake(macAddr string, ip string, port string) error {
-	bcastInterface := ""
+func Wake(macAddr string, ip string, port string, network string) error {
+	bcastInterface := network
 	bcastAddr := fmt.Sprintf("%s:%s", ip, port)
 	udpAddr, err := net.ResolveUDPAddr("udp", bcastAddr)
 	if err != nil {
