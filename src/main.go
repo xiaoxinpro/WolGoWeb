@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	VERSION = "1.6.65"
+	VERSION = "1.7.67"
 )
 
 var (
@@ -69,6 +69,11 @@ func main() {
 	fmt.Printf("Start Run WolGoWeb...\n\n")
 	fmt.Printf("Version: %s\n\n", VERSION)
 
+	names, err := NetworkInterfaceNames()
+	if err == nil {
+		fmt.Printf("Network Interface Names: %+q\n\n", names)
+	}
+
 	if ConfigSource == "env" {
 		WebMode = getEnvString("MODE", WebMode)
 		WebPort = getEnvInt("PORT", WebPort)
@@ -107,11 +112,12 @@ WOL唤醒工具
 API[GET]: http://%s/wol
 
 Params:
-  mac  : 需要唤醒的MAC地址（必须）,
-  ip   : 指定IP地址（默认：255.255.255.255）,
-  port : 唤醒端口（默认：9）,
-  time : 请求时间戳（配合授权验证使用）,
-  token: 授权Token = MD5(key + mac + time)（必须存在key的情况下才有效，否则忽略。）,
+  mac     : 需要唤醒的MAC地址（必须）,
+  ip      : 指定IP地址（默认：255.255.255.255）,
+  port    : 唤醒端口（默认：9）,
+  time    : 请求时间戳（配合授权验证使用）,
+  token   : 授权Token = MD5(key + mac + time)（必须存在key的情况下才有效，否则忽略。）,
+  network : 指定网卡名称（选填）,
 
 Example: http://%s/wol?mac=11-22-33-44-55-66
 
@@ -148,10 +154,11 @@ func GetWol(c *gin.Context) {
 	mac := c.Query("mac")
 	ip := c.DefaultQuery("ip", "255.255.255.255")
 	port := c.DefaultQuery("port", "9")
+	network := c.DefaultQuery("network", "")
 	token := c.DefaultQuery("token", "")
 	vk, _ := strconv.ParseInt(c.DefaultQuery("time", "0"), 10, 64)
 	if errAuth, messageAuth := VerifyAuth(ApiKey, mac, vk, token); errAuth == 0 {
-		err := Wake(mac, ip, port)
+		err := Wake(mac, ip, port, network)
 		if err != nil {
 			c.JSON(200, gin.H{
 				"error":   100,
