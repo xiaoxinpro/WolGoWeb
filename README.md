@@ -110,7 +110,7 @@ docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 
 完成部署工作即可开始使用，首先使用浏览器访问 `http://服务器IP或域名:9090`，如果修改了端口号请访问对应的端口。
 
-![访问服务地址](https://image.xiaoxin.pro/github/WolGoWeb/%E8%AE%BF%E9%97%AE%E6%9C%8D%E5%8A%A1%E5%9C%B0%E5%9D%80.PNG)
+![访问服务地址](https://image.xiaoxin.pro/2024/09/07/11b4b52fd6192.png)
 
 看到以上界面表示服务部署成功。
 
@@ -118,14 +118,15 @@ docker run -d --net=host --env PORT=端口号 chishin/wol-go-web
 
 可以直接使用浏览器访问 `http://服务器IP或域名:9090/wol?mac=需要唤醒主机的MAC地址` 当出现以下界面表示唤醒命令发送成功。
 
-![发送唤醒请求](https://image.xiaoxin.pro/github/WolGoWeb/%E5%8F%91%E9%80%81%E5%94%A4%E9%86%92%E8%AF%B7%E6%B1%82.PNG)
+![发送唤醒请求](https://image.xiaoxin.pro/2024/09/07/52f43a17574b3.png)
 
 ### 3、唤醒请求参数
-| 参数名称 | 描述         | 备注                 |
-|------|------------|--------------------|
-| mac  | 唤醒主机的MAC地址 | 必填                 |
-| ip   | 唤醒主机的IP地址  | 默认：255.255.255.255 |
-| port | 唤醒命令发送的端口  | 默认：9               |
+| 参数名称    | 描述           | 备注                 |
+|---------|--------------|--------------------|
+| mac     | 唤醒主机的MAC地址   | 必填                 |
+| ip      | 唤醒主机的IP地址    | 默认：255.255.255.255 |
+| port    | 唤醒命令发送的端口    | 默认：9               |
+| network | 唤醒命令发送网络接口名称 | 默认：空               |
 
 ### 4、API权限验证
 
