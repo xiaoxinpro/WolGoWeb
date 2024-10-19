@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	VERSION = "1.7.68"
+	VERSION = "1.7.70"
 )
 
 var (
