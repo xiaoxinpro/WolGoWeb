@@ -314,11 +314,12 @@
 
     async function saveConfig() {
         try {
-            const name = prompt('请输入配置名称：');
-            if (!name) return;
-
+            let name = prompt('请输入配置名称：');
             const params = await getFormParams();
             const configs = JSON.parse(localStorage.getItem('wolConfigs') || '[]');
+            if (!name) {
+                name = "未命名" + (configs.length + 1).toString()
+            }
             configs.push({ name, ...params });
             localStorage.setItem('wolConfigs', JSON.stringify(configs));
             loadSavedConfigs();
