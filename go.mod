@@ -1,6 +1,6 @@
 module github.com/xiaoxinpro/WolGoWeb
 
-go 1.14
+go 1.16
 
 require (
 	github.com/bytedance/sonic v1.11.3 // indirect

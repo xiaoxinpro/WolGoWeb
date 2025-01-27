@@ -2,6 +2,7 @@
 
 import (
 	"crypto/md5"
+	"embed"
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -11,7 +12,7 @@ import (
 )
 
 var (
-	VERSION = "1.8.72"
+	VERSION = "1.8.73"
 )
 
 var (
@@ -27,6 +28,9 @@ var (
 var (
 	vkBakDict = make(map[string]int64)
 )
+
+//go:embed index.html
+var indexHTML embed.FS
 
 func MD5(str string) string {
 	data := []byte(str)
@@ -87,20 +91,16 @@ func main() {
 
 	r := gin.Default()
 
-	// 添加静态文件服务
-	r.StaticFile("/", "./src/index.html")
-	r.StaticFile("/index", "./src/index.html")
-
+	// 添加 Web 服务
 	if WebEnable {
 		if WebUsername != "" && WebPassword != "" {
-			ginUserAccount := gin.Accounts{WebUsername: WebPassword}
-			r.GET("/", gin.BasicAuth(ginUserAccount), func(c *gin.Context) {
-				c.File("./src/index.html")
-			})
-			r.GET("/index", gin.BasicAuth(ginUserAccount), func(c *gin.Context) {
-				c.File("./src/index.html")
-			})
+			ginUserAccount := gin.BasicAuth(gin.Accounts{WebUsername: WebPassword})
+			r.GET("/", ginUserAccount, GetIndex)
+			r.GET("/index", ginUserAccount, GetIndex)
 			fmt.Printf("BasicAuth\n  username:%s\n  password:%s\n\n", WebUsername, WebPassword)
+		} else {
+			r.GET("/", GetIndex)
+			r.GET("/index", GetIndex)
 		}
 	}
 	r.GET("/wol", GetWol)
@@ -136,6 +136,15 @@ func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
 		}
 	}
 	return err, message
+}
+
+func GetIndex(c *gin.Context) {
+	data, err := indexHTML.ReadFile("index.html")
+	if err != nil {
+		c.String(500, "Failed to load page")
+		return
+	}
+	c.Data(200, "text/html; charset=utf-8", data)
 }
 
 func GetWol(c *gin.Context) {
