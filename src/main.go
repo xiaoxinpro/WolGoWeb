@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	VERSION = "1.7.71"
+	VERSION = "1.8.72"
 )
 
 var (
@@ -87,15 +87,20 @@ func main() {
 
 	r := gin.Default()
 
+	// 添加静态文件服务
+	r.StaticFile("/", "./src/index.html")
+	r.StaticFile("/index", "./src/index.html")
+
 	if WebEnable {
 		if WebUsername != "" && WebPassword != "" {
 			ginUserAccount := gin.Accounts{WebUsername: WebPassword}
-			r.GET("/", gin.BasicAuth(ginUserAccount), GetIndex)
-			r.GET("/index", gin.BasicAuth(ginUserAccount), GetIndex)
+			r.GET("/", gin.BasicAuth(ginUserAccount), func(c *gin.Context) {
+				c.File("./src/index.html")
+			})
+			r.GET("/index", gin.BasicAuth(ginUserAccount), func(c *gin.Context) {
+				c.File("./src/index.html")
+			})
 			fmt.Printf("BasicAuth\n  username:%s\n  password:%s\n\n", WebUsername, WebPassword)
-		} else {
-			r.GET("/", GetIndex)
-			r.GET("/index", GetIndex)
 		}
 	}
 	r.GET("/wol", GetWol)
@@ -106,26 +111,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-}
-
-func GetIndex(c *gin.Context) {
-	c.String(200, `
-WOL唤醒工具
-
-API[GET]: http://%s/wol
-
-Params:
-  mac     : 需要唤醒的MAC地址（必须）,
-  ip      : 指定IP地址（默认：255.255.255.255）,
-  port    : 唤醒端口（默认：9）,
-  time    : 请求时间戳（配合授权验证使用）,
-  token   : 授权Token = MD5(key + mac + time)（必须存在key的情况下才有效，否则忽略。）,
-  network : 指定网卡名称（选填）,
-
-Example: http://%s/wol?mac=11-22-33-44-55-66
-
-Version: %s
-`, c.Request.Host, c.Request.Host, VERSION)
 }
 
 func VerifyAuth(key string, mac string, vk int64, token string) (int, string) {
@@ -179,5 +164,4 @@ func GetWol(c *gin.Context) {
 			"message": messageAuth,
 		})
 	}
-
 }
