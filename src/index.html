@@ -98,13 +98,58 @@
             flex-shrink: 0;
             padding: 8px 16px;
         }
+        .api-docs {
+            background: white;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .api-docs h2 {
+            color: #333;
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .api-params {
+            margin: 15px 0;
+        }
+        .api-params dt {
+            font-weight: bold;
+            margin: 10px 0 5px;
+            color: #007bff;
+        }
+        .api-params dd {
+            margin-left: 20px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .code-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .code-example code {
+            font-family: Consolas, monospace;
+            color: #e83e8c;
+        }
+        .required {
+            color: #dc3545;
+            font-size: 0.9em;
+        }
+        .default-value {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
 <div class="form-container">
-    <h1>WOL唤醒工具</h1>
+    <h1>WOL唤醒工具 V<!--VERSION--></h1>
     <div class="form-group">
-        <label for="mac">MAC地址 *</label>
+        <label for="mac">MAC地址 (必填)</label>
         <input type="text" id="mac" placeholder="11-22-33-44-55-66" required>
     </div>
     <div class="form-group">
@@ -139,6 +184,51 @@
     <div id="config-list"></div>
 </div>
 
+<div class="api-docs">
+    <h2>API使用说明</h2>
+    <p>通过GET请求发送网络唤醒指令：</p>
+
+    <div class="code-example">
+        <code>GET http://<span id="currentHost">当前域名</span>/wol</code>
+    </div>
+
+    <div class="api-params">
+        <h3>请求参数</h3>
+        <dl>
+            <dt>mac <span class="required">* 必填</span></dt>
+            <dd>需要唤醒设备的MAC地址，格式支持: 11-22-33-44-55-66 或 11:22:33:44:55:66</dd>
+
+            <dt>ip <span class="default-value">默认: 255.255.255.255</span></dt>
+            <dd>目标广播地址，通常不需要修改</dd>
+
+            <dt>port <span class="default-value">默认: 9</span></dt>
+            <dd>唤醒端口号，通常不需要修改</dd>
+
+            <dt>time</dt>
+            <dd>当前时间戳（秒），时区为环境变量中的TZ，需要配合token使用</dd>
+
+            <dt>token</dt>
+            <dd>安全验证令牌，计算公式：MD5(密钥 + MAC地址 + 时间戳)<br>
+                例：密钥为"abc123"，MAC地址为"11-22-33-44-55-66"，时间戳为"1234567890"时 <br>
+                token = MD5("abc12311-22-33-44-55-661234567890")
+            </dd>
+        </dl>
+    </div>
+
+    <h3>使用示例</h3>
+    <div class="code-example">
+        <code id="apiExample">示例加载中...</code>
+    </div>
+
+    <h3>使用说明</h3>
+    <ul>
+        <li>密钥功能需要在服务端配置才能生效</li>
+        <li>带密钥请求时，参数必须包含mac、time和token</li>
+        <li>时间戳有效期为±5分钟</li>
+        <li>MAC地址会自动过滤特殊字符</li>
+    </ul>
+</div>
+
 <div id="customAlert" class="custom-alert">
     <div class="alert-content">
         <div class="alert-message" id="alertMessage"></div>
@@ -147,8 +237,13 @@
 </div>
 
 <script>
-    // 页面加载时读取保存的配置
-    document.addEventListener('DOMContentLoaded', loadSavedConfigs);
+    // 页面加载时
+    document.addEventListener('DOMContentLoaded', function () {
+        // 读取保存的配置
+        loadSavedConfigs();
+        // 动态设置API文档中的当前域名
+        loadApiElement();
+    });
 
     function loadSavedConfigs() {
         const configs = JSON.parse(localStorage.getItem('wolConfigs') || '[]');
@@ -163,6 +258,15 @@
                     </div>
                 </div>
             `).join('');
+    }
+
+    function loadApiElement() {
+        const hostElement = document.getElementById('currentHost');
+        const exampleElement = document.getElementById('apiExample');
+        const baseUrl = `${window.location.host}/wol?mac=11-22-33-44-55-66`;
+
+        hostElement.textContent = window.location.host;
+        exampleElement.innerHTML = `示例：<span style="user-select: all">${window.location.protocol}//${window.location.host}/wol?mac=11-22-33-44-55-66</span>`;
     }
 
     async function sendWOL() {

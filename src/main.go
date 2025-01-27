@@ -8,11 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
 var (
-	VERSION = "1.8.74"
+	VERSION = "1.8.75"
 )
 
 var (
@@ -144,7 +145,9 @@ func GetIndex(c *gin.Context) {
 		c.String(500, "Failed to load page")
 		return
 	}
-	c.Data(200, "text/html; charset=utf-8", data)
+	html := strings.ReplaceAll(string(data), "<!--VERSION-->", VERSION)
+	println(html)
+	c.Data(200, "text/html; charset=utf-8", []byte(html))
 }
 
 func GetWol(c *gin.Context) {
