@@ -17,6 +17,13 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-container h2 {
+            color: #333;
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -45,15 +52,24 @@
             cursor: pointer;
             flex: 1;
         }
-        .saved-list {
-            margin-top: 30px;
-        }
         .saved-item {
-            background: white;
+            background: #fff;
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .saved-item div:not(:last-child) {
+            margin-bottom: 8px;
+        }
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .item-actions button {
+            padding: 8px 16px;
+            flex: none;
         }
         .custom-alert {
             display: none;
@@ -180,8 +196,10 @@
 </div>
 
 <div class="saved-list">
-    <h2>已保存配置</h2>
-    <div id="config-list"></div>
+    <div class="form-container">
+        <h2>本地配置</h2>
+        <div id="config-list"></div>
+    </div>
 </div>
 
 <div class="api-docs">
@@ -249,15 +267,17 @@
         const configs = JSON.parse(localStorage.getItem('wolConfigs') || '[]');
         const list = document.getElementById('config-list');
         list.innerHTML = configs.map((config, index) => `
-                <div class="saved-item">
-                    <div><strong>${config.name || '未命名配置'}</strong></div>
-                    <div>MAC: ${config.mac}</div>
-                    <div class="item-actions">
-                        <button onclick="sendSavedConfig(${index})">发送</button>
-                        <button onclick="deleteConfig(${index})">删除</button>
-                    </div>
+            <div class="saved-item">
+                <div><strong>${config.name || '未命名配置'}</strong></div>
+                <div>MAC: ${config.mac}</div>
+                ${config.ip ? `<div>IP: ${config.ip}</div>` : ''}
+                ${config.port ? `<div>端口: ${config.port}</div>` : ''}
+                <div class="item-actions">
+                    <button onclick="sendSavedConfig(${index})">发送</button>
+                    <button onclick="deleteConfig(${index})">删除</button>
                 </div>
-            `).join('');
+            </div>
+        `).join('');
     }
 
     function loadApiElement() {

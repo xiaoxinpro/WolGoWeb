@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	VERSION = "1.8.75"
+	VERSION = "1.8.76"
 )
 
 var (
@@ -146,7 +146,6 @@ func GetIndex(c *gin.Context) {
 		return
 	}
 	html := strings.ReplaceAll(string(data), "<!--VERSION-->", VERSION)
-	println(html)
 	c.Data(200, "text/html; charset=utf-8", []byte(html))
 }
 
