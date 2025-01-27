@@ -55,51 +55,105 @@
             border-radius: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+        .custom-alert {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .alert-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 300px;
+            max-width: 80%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .alert-message {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .alert-content button {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+        }
+        .url-output {
+            display: none;
+            margin-top: 15px;
+            gap: 10px;
+        }
+        .url-output input {
+            flex: 9;
+            padding: 8px;
+            background: #f8f9fa;
+        }
+        .url-output button {
+            flex-shrink: 0;
+            padding: 8px 16px;
+        }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h1>WOL唤醒工具</h1>
-        <div class="form-group">
-            <label for="mac">MAC地址 *</label>
-            <input type="text" id="mac" placeholder="11-22-33-44-55-66" required>
-        </div>
-        <div class="form-group">
-            <label for="ip">IP地址</label>
-            <input type="text" id="ip" placeholder="255.255.255.255">
-        </div>
-        <div class="form-group">
-            <label for="port">端口</label>
-            <input type="number" id="port" placeholder="9">
-        </div>
-        <div class="form-group">
-            <label for="network">网卡名称</label>
-            <input type="text" id="network">
-        </div>
-        <div class="form-group">
-            <label for="key">密钥</label>
-            <input type="text" id="key">
-        </div>
-        <div class="buttons">
-            <button onclick="sendWOL()">发送WOL</button>
-            <button onclick="getURL()">获取URL</button>
-            <button onclick="saveConfig()">保存</button>
-        </div>
+<div class="form-container">
+    <h1>WOL唤醒工具</h1>
+    <div class="form-group">
+        <label for="mac">MAC地址 *</label>
+        <input type="text" id="mac" placeholder="11-22-33-44-55-66" required>
     </div>
-
-    <div class="saved-list">
-        <h2>已保存配置</h2>
-        <div id="config-list"></div>
+    <div class="form-group">
+        <label for="ip">IP地址</label>
+        <input type="text" id="ip" placeholder="255.255.255.255">
     </div>
+    <div class="form-group">
+        <label for="port">端口</label>
+        <input type="number" id="port" placeholder="9">
+    </div>
+    <div class="form-group">
+        <label for="network">网卡名称</label>
+        <input type="text" id="network">
+    </div>
+    <div class="form-group">
+        <label for="key">密钥</label>
+        <input type="text" id="key">
+    </div>
+    <div class="buttons">
+        <button onclick="sendWOL()">发送WOL</button>
+        <button onclick="getURL()">获取URL</button>
+        <button onclick="saveConfig()">保存</button>
+    </div>
+    <div class="url-output">
+        <input type="text" id="generatedUrl" readonly>
+        <button onclick="copyUrl()">复制URL</button>
+    </div>
+</div>
 
-    <script>
-        // 页面加载时读取保存的配置
-        document.addEventListener('DOMContentLoaded', loadSavedConfigs);
+<div class="saved-list">
+    <h2>已保存配置</h2>
+    <div id="config-list"></div>
+</div>
 
-        function loadSavedConfigs() {
-            const configs = JSON.parse(localStorage.getItem('wolConfigs') || '[]');
-            const list = document.getElementById('config-list');
-            list.innerHTML = configs.map((config, index) => `
+<div id="customAlert" class="custom-alert">
+    <div class="alert-content">
+        <div class="alert-message" id="alertMessage"></div>
+        <button onclick="hideAlert()">确定</button>
+    </div>
+</div>
+
+<script>
+    // 页面加载时读取保存的配置
+    document.addEventListener('DOMContentLoaded', loadSavedConfigs);
+
+    function loadSavedConfigs() {
+        const configs = JSON.parse(localStorage.getItem('wolConfigs') || '[]');
+        const list = document.getElementById('config-list');
+        list.innerHTML = configs.map((config, index) => `
                 <div class="saved-item">
                     <div><strong>${config.name || '未命名配置'}</strong></div>
                     <div>MAC: ${config.mac}</div>
@@ -109,97 +163,122 @@
                     </div>
                 </div>
             `).join('');
-        }
+    }
 
-        function sendWOL() {
-            const params = getFormParams();
+    async function sendWOL() {
+        try {
+            const params = await getFormParams();
             fetch(`/wol?${new URLSearchParams(params)}`)
                 .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
-                .catch(error => {
-                    alert('发送失败: ' + error.message);
-                });
+                .then(data => showAlert(data.message))
+                .catch(error => showAlert('发送失败: ' + error.message));
+        } catch (error) {
+            showAlert(error.message);
         }
+    }
 
-        function getURL() {
-            const params = getFormParams();
+    async function getURL() {
+        try {
+            const params = await getFormParams();
             const url = `${window.location.origin}/wol?${new URLSearchParams(params)}`;
-            alert(url);
+            document.getElementById('generatedUrl').value = url;
+            document.querySelector('.url-output').style.display = 'flex';
+        } catch (error) {
+            showAlert(error.message);
         }
+    }
 
-        function saveConfig() {
+    async function saveConfig() {
+        try {
             const name = prompt('请输入配置名称：');
             if (!name) return;
 
-            const config = {
-                name,
-                ...getFormParams()
-            };
-
+            const params = await getFormParams();
             const configs = JSON.parse(localStorage.getItem('wolConfigs') || '[]');
-            configs.push(config);
+            configs.push({ name, ...params });
             localStorage.setItem('wolConfigs', JSON.stringify(configs));
             loadSavedConfigs();
+            showAlert('配置保存成功');
+        } catch (error) {
+            showAlert('保存失败: ' + error.message);
         }
+    }
 
-        function deleteConfig(index) {
-            const configs = JSON.parse(localStorage.getItem('wolConfigs') || '[]');
-            configs.splice(index, 1);
-            localStorage.setItem('wolConfigs', JSON.stringify(configs));
-            loadSavedConfigs();
-        }
+    function deleteConfig(index) {
+        const configs = JSON.parse(localStorage.getItem('wolConfigs') || '[]');
+        configs.splice(index, 1);
+        localStorage.setItem('wolConfigs', JSON.stringify(configs));
+        loadSavedConfigs();
+    }
 
-        function sendSavedConfig(index) {
+    async function sendSavedConfig(index) {
+        try {
             const configs = JSON.parse(localStorage.getItem('wolConfigs') || '[]');
             const config = configs[index];
             fetch(`/wol?${new URLSearchParams(config)}`)
                 .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
-                .catch(error => {
-                    alert('发送失败: ' + error.message);
-                });
+                .then(data => showAlert(data.message))
+                .catch(error => showAlert('发送失败: ' + error.message));
+        } catch (error) {
+            showAlert(error.message);
         }
+    }
 
-        function getFormParams() {
-            const params = {};
-            const mac = document.getElementById('mac').value;
-            if (mac) {
-                params.mac = mac;
-            }
-            const ip = document.getElementById('ip').value;
-            if (ip) {
-                params.ip = ip;
-            }
-            const port = document.getElementById('port').value;
-            if (port) {
-                params.port = port;
-            }
-            const network = document.getElementById('network').value;
-            if (network) {
-                params.network = network;
-            }
-            const key = document.getElementById('key').value;
-            if (key) {
-                const time = Math.floor(Date.now() / 1000);
-                const token = md5(key + mac + time);
-                params.time = time;
-                params.token = token;
-            }
-            return params;
-        }
+    async function getFormParams() {
+        const params = {};
+        const mac = document.getElementById('mac').value;
+        if (!mac) throw new Error('MAC地址不能为空');
+        params.mac = mac;
 
-        function md5(input) {
-            return crypto.subtle.digest('MD5', new TextEncoder().encode(input))
-                .then(hash => {
-                    return Array.from(new Uint8Array(hash))
-                        .map(b => b.toString(16).padStart(2, '0'))
-                        .join('');
-                });
+        const ip = document.getElementById('ip').value;
+        if (ip) params.ip = ip;
+
+        const port = document.getElementById('port').value;
+        if (port) params.port = port;
+
+        const network = document.getElementById('network').value;
+        if (network) params.network = network;
+
+        const key = document.getElementById('key').value;
+        if (key) {
+            const time = Math.floor(Date.now() / 1000);
+            const token = await md5(key + mac + time);
+            params.time = time;
+            params.token = token;
         }
-    </script>
+        return params;
+    }
+
+    function md5(input) {
+        return crypto.subtle.digest('MD5', new TextEncoder().encode(input))
+            .then(hash => {
+                return Array.from(new Uint8Array(hash))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+            });
+    }
+
+    function showAlert(message) {
+        const alertBox = document.getElementById('customAlert');
+        document.getElementById('alertMessage').textContent = message;
+        alertBox.style.display = 'flex';
+    }
+
+    function hideAlert() {
+        document.getElementById('customAlert').style.display = 'none';
+    }
+
+    document.getElementById('customAlert').addEventListener('click', function(e) {
+        if (e.target === this) hideAlert();
+    });
+
+    function copyUrl() {
+        const urlInput = document.getElementById('generatedUrl');
+        urlInput.select();
+        navigator.clipboard.writeText(urlInput.value)
+            .then(() => showAlert('已复制到剪贴板'))
+            .catch(() => showAlert('复制失败，请手动复制'));
+    }
+</script>
 </body>
 </html>
