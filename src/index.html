@@ -15,6 +15,29 @@
         h1 {
             text-align: center;
         }
+        .version-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.75em;
+            color: #666;
+            gap: 15px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .version-info a {
+            color: #666666;
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .version-info a:hover {
+            background-color: #e0e0e0;
+        }
         .form-container {
             background: white;
             padding: 20px;
@@ -54,6 +77,9 @@
             border-radius: 4px;
             cursor: pointer;
             flex: 1;
+        }
+        button:hover {
+            background-color: #e0e0e0;
         }
         .saved-item {
             background: #fff;
@@ -210,7 +236,12 @@
 </head>
 <body>
 <div class="form-container">
-    <h1>WOL唤醒工具 V<!--VERSION--></h1>
+    <h1>WOL唤醒工具</h1>
+    <div class="version-info">
+        <a href="https://github.com/xiaoxinpro/WolGoWeb/releases" target="_blank">Version: <!--VERSION--></a>
+        <a href="https://github.com/xiaoxinpro/WolGoWeb" target="_blank">GitHub: xiaoxinpro/WolGoWeb</a>
+        <a href="https://hub.docker.com/r/chishin/wol-go-web" target="_blank">DockerHub: chishin/wol-go-web</a>
+    </div>
     <div class="form-group">
         <label for="mac">MAC地址 (必填)</label>
         <input type="text" id="mac" placeholder="11-22-33-44-55-66" required>
@@ -221,7 +252,7 @@
     </div>
     <div class="form-group">
         <label for="port">端口</label>
-        <input type="number" id="port" placeholder="9">
+        <input type="number" id="port" min="0" max="65535" placeholder="9">
     </div>
     <div class="form-group">
         <label for="network">网卡名称</label>
@@ -234,7 +265,7 @@
     <div class="buttons">
         <button onclick="sendWOL()">发送WOL</button>
         <button onclick="getURL()">获取URL</button>
-        <button onclick="saveConfig()">保存</button>
+        <button onclick="saveConfig()">保存配置</button>
     </div>
     <div class="url-output">
         <input type="text" id="generatedUrl" readonly>
@@ -346,7 +377,7 @@
             const params = await getFormParams();
             fetch(`/wol?${new URLSearchParams(params)}`)
                 .then(response => response.json())
-                .then(data => showAlert(data.message, '唤醒成功'))
+                .then(data => data.error == 0 ? showAlert(data.message, '唤醒成功') : showAlert(data.message, '唤醒失败'))
                 .catch(error => showAlert(error.message, '发送失败'));
         } catch (error) {
             showAlert(error.message, 'WOL失败');
