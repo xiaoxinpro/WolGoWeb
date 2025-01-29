@@ -57,18 +57,51 @@
         }
         .saved-item {
             background: #fff;
-            padding: 15px;
+            padding: 10px;
             margin-bottom: 10px;
             border-radius: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            position: relative;
         }
-        .saved-item div:not(:last-child) {
-            margin-bottom: 8px;
+
+        .saved-item .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
+        .saved-item .item-header strong {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .saved-item .item-details {
+            margin-right: 135px;
+            display: flex;
+            gap: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .saved-item .item-details div {
+            font-size: 0.9em;
+            color: #666;
+            display: flex;
+            align-items: center;
+            text-overflow: ellipsis;
+            max-width: calc(100% - 20px);
+        }
+
         .item-actions {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
         }
         .item-actions button {
             padding: 8px 16px;
@@ -132,7 +165,6 @@
         .api-docs {
             background: white;
             padding: 20px;
-            margin-top: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -284,10 +316,14 @@
         const list = document.getElementById('config-list');
         list.innerHTML = configs.map((config, index) => `
             <div class="saved-item">
-                <div><strong>${config.name || '未命名配置'}</strong></div>
-                <div>MAC: ${config.mac}</div>
-                ${config.ip ? `<div>IP: ${config.ip}</div>` : ''}
-                ${config.port ? `<div>端口: ${config.port}</div>` : ''}
+                <div class="item-header">
+                    <strong>${config.name || '未命名配置'}</strong>
+                </div>
+                <div class="item-details">
+                    <div>MAC:${config.mac}</div>
+                    ${config.ip ? `<div>IP:${config.ip}</div>` : ''}
+                    ${config.port ? `<div>端口:${config.port}</div>` : ''}
+                </div>
                 <div class="item-actions">
                     <button onclick="sendSavedConfig(${index})">发送</button>
                     <button onclick="deleteConfig(${index})">删除</button>
@@ -339,7 +375,7 @@
             configs.push({ name, ...params });
             localStorage.setItem('wolConfigs', JSON.stringify(configs));
             loadSavedConfigs();
-            showAlert('[' + name + '] 配置保存成功', '保存配置');
+            showAlert('【' + name + '】配置保存成功', '保存配置');
         } catch (error) {
             showAlert('' + error.message, '保存失败');
         }
@@ -358,7 +394,7 @@
             const config = configs[index];
             fetch(`/wol?${new URLSearchParams(config)}`)
                 .then(response => response.json())
-                .then(data => showAlert(data.message, '唤醒成功'))
+                .then(data => data.error == 0 ? showAlert(data.message, '唤醒成功') : showAlert(data.message, '唤醒失败'))
                 .catch(error => showAlert('发送失败: ' + error.message));
         } catch (error) {
             showAlert(error.message, 'WOL失败');
